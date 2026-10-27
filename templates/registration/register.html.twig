@@ -1,0 +1,23 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}Create account – BudgetT{% endblock %}
+
+{% block auth_content %}
+    <p class="eyebrow">Get started</p>
+    <h2>Create your account</h2>
+    <p class="auth-lede">A private place for your budgets, spending, and savings.</p>
+
+    {{ form_start(registrationForm, {attr: {class: 'auth-form', novalidate: 'novalidate'}}) }}
+        {{ form_errors(registrationForm) }}
+
+        {{ form_row(registrationForm.username, {
+            row_attr: {class: 'auth-field'},
+        }) }}
+
+        {{ form_row(registrationForm.plainPassword) }}
+
+        <button class="auth-submit" type="submit">Create account</button>
+    {{ form_end(registrationForm) }}
+
+    <p class="auth-alt">Already have an account? <a href="{{ path('app_login') }}">Sign in</a></p>
+{% endblock %}

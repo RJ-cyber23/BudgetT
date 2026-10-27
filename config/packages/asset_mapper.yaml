@@ -2,7 +2,10 @@ framework:
     asset_mapper:
         # The paths to make available to the asset mapper.
         paths:
-            - assets/
+            assets/: ''
+            # Page-specific assets live next to their Twig templates.
+            templates/css/: 'css'
+            templates/js/: 'js'
         missing_import_mode: strict
 
 when@prod:

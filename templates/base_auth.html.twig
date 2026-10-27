@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#09090b">
+    <title>{% block title %}BudgetT{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><rect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%237c3aed%22/><text x=%2232%22 y=%2244%22 text-anchor=%22middle%22 font-size=%2238%22 fill=%22white%22>₱</text></svg>">
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+</head>
+<body class="auth-page">
+    <main class="auth-shell">
+        <section class="auth-hero" aria-labelledby="authHeroTitle">
+            <a class="brand brand--auth" href="{{ path('app_landing') }}">
+                <span class="brand-mark" aria-hidden="true">₱</span>
+                <span>BudgetT</span>
+            </a>
+
+            <div class="auth-hero__copy">
+                <p class="eyebrow">Personal budgeting</p>
+                <h1 id="authHeroTitle">Plan your spending. Keep your savings.</h1>
+                <p>Track budgets, log transactions, and see exactly what is left without the spreadsheet juggling.</p>
+
+                <ul class="auth-features">
+                    <li><span aria-hidden="true">✓</span> Budgets that fit real life</li>
+                    <li><span aria-hidden="true">✓</span> Every peso accounted for</li>
+                    <li><span aria-hidden="true">✓</span> Savings you can actually see</li>
+                </ul>
+            </div>
+
+            <p class="auth-hero__foot">Private by default. Your account only sees your own data.</p>
+        </section>
+
+        <section class="auth-panel">
+            {% block auth_content %}{% endblock %}
+        </section>
+    </main>
+</body>
+</html>

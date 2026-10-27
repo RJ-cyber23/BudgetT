@@ -1,0 +1,93 @@
+{# Shared top bar, right-hand drawer and overlay. Set `active` to dashboard, budgets, transactions or reports. #}
+{% set active = active|default('') %}
+
+<header class="topbar">
+    <a class="brand" href="{{ path('homepage') }}">
+        <span class="brand-mark" aria-hidden="true">₱</span>
+        <span>BudgetT</span>
+    </a>
+
+    <nav class="topnav" aria-label="Primary">
+        <a href="{{ path('homepage') }}"{% if active == 'dashboard' %} class="is-active" aria-current="page"{% endif %}>Dashboard</a>
+        <a href="{{ path('budget') }}"{% if active == 'budgets' %} class="is-active" aria-current="page"{% endif %}>Budgets</a>
+        <a href="{{ path('transaction') }}"{% if active == 'transactions' %} class="is-active" aria-current="page"{% endif %}>Transactions</a>
+        <a href="{{ path('report') }}"{% if active == 'reports' %} class="is-active" aria-current="page"{% endif %}>Reports</a>
+    </nav>
+
+    <button
+        class="nav-toggle"
+        id="navToggle"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-controls="rightNav"
+        aria-expanded="false"
+    >
+        <span class="bar" aria-hidden="true"></span>
+        <span class="bar" aria-hidden="true"></span>
+        <span class="bar" aria-hidden="true"></span>
+    </button>
+</header>
+
+<aside class="right-nav" id="rightNav" aria-label="Main navigation" inert>
+    <div class="right-nav__header">
+        <h2 class="right-nav__title">Menu</h2>
+        <button class="nav-close" id="navClose" type="button" aria-label="Close navigation menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="right-nav__body">
+        <ul class="drawer-section">
+            <li class="drawer-label" aria-hidden="true">Overview</li>
+            <li>
+                <a class="drawer-link{% if active == 'dashboard' %} is-active{% endif %}" href="{{ path('homepage') }}"{% if active == 'dashboard' %} aria-current="page"{% endif %}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a class="drawer-link{% if active == 'reports' %} is-active{% endif %}" href="{{ path('report') }}"{% if active == 'reports' %} aria-current="page"{% endif %}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/></svg>
+                    Reports
+                </a>
+            </li>
+        </ul>
+
+        <ul class="drawer-section">
+            <li class="drawer-label" aria-hidden="true">Manage</li>
+            <li>
+                <a class="drawer-link{% if active == 'budgets' %} is-active{% endif %}" href="{{ path('budget') }}"{% if active == 'budgets' %} aria-current="page"{% endif %}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-6M22 19H2"/></svg>
+                    Budgets
+                </a>
+            </li>
+            <li>
+                <a class="drawer-link{% if active == 'transactions' %} is-active{% endif %}" href="{{ path('transaction') }}"{% if active == 'transactions' %} aria-current="page"{% endif %}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-2-1.5L14 21l-2-1.5L10 21l-2-1.5L6 21V3z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+                    Transactions
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="right-nav__footer">
+        <div class="account">
+            <span class="account__avatar" aria-hidden="true">{{ app.user ? app.user.userIdentifier|slice(0, 2)|upper : 'BT' }}</span>
+            <div class="account__copy">
+                <p class="account__name" title="{{ app.user ? app.user.userIdentifier : 'BudgetT' }}">{{ app.user ? app.user.userIdentifier : 'BudgetT' }}</p>
+                <p class="account__meta">{{ app.user ? 'Signed in' : 'Guest' }}</p>
+            </div>
+        </div>
+
+        {% if app.user %}
+            <form class="logout-form" method="post" action="{{ path('_logout_main') }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                <button class="logout-btn" type="submit">Log out</button>
+            </form>
+        {% endif %}
+    </div>
+</aside>
+
+<div class="nav-overlay" id="navOverlay"></div>

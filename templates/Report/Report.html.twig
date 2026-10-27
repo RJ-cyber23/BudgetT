@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#09090b">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>BudgetT – Savings report</title>
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/report.css') }}">
+</head>
+<body>
+
+    {% include 'partials/nav.html.twig' with {active: 'reports'} %}
+
+    <!-- Page content -->
+    <main class="page">
+        <div class="hero">
+            <p class="eyebrow">Insights</p>
+            <h1>Savings report</h1>
+            <p>How much is left after spending, across every budget.</p>
+        </div>
+
+        <div class="cards">
+            <article class="card">
+                <p class="card__label">Actual budget</p>
+                <p class="card__value">{{ totalBudget|money(currency) }}</p>
+            </article>
+            <article class="card">
+                <p class="card__label">Total spent</p>
+                <p class="card__value">{{ totalSpent|money(currency) }}</p>
+            </article>
+            <article class="card">
+                <p class="card__label">Remaining savings</p>
+                <p class="card__value {{ totalRemaining < 0 ? 'is-negative' : 'is-positive' }}">{{ totalRemaining|money(currency) }}</p>
+            </article>
+        </div>
+
+        <section class="panel">
+            <div class="panel__head">
+                <div>
+                    <h2 class="panel__title">Savings by budget</h2>
+                    <p class="panel__sub">Actual budget, spending and remaining savings for each budget.</p>
+                </div>
+                <span class="pill">{{ rows|length }} {{ rows|length == 1 ? 'budget' : 'budgets' }}</span>
+            </div>
+
+            {% if rows is empty %}
+                <p class="empty-state">No budgets found in the database yet. Add a budget to see its savings.</p>
+            {% else %}
+                <ul class="savings-list">
+                    {% for row in rows %}
+                        <li class="savings-item">
+                            <div class="savings-item__head">
+                                <div class="savings-item__title-group">
+                                    <p class="savings-item__title">{{ row.description }}</p>
+                                    <p class="savings-item__meta meta-stack">
+                                        <span>{{ row.username }}</span>
+                                        <time class="meta-stack__created" datetime="{{ row.createdAt|date('c') }}">
+                                            <span>Created {{ row.createdAt|date('M j, Y') }}</span>
+                                            <span>{{ row.createdAt|date('g:i A') }}</span>
+                                        </time>
+                                    </p>
+                                </div>
+                                <p class="savings-item__remaining {{ row.remainingSavings < 0 ? 'is-negative' : 'is-positive' }}">
+                                    {{ row.remainingSavings|money(row.currencyType) }}
+                                </p>
+                            </div>
+
+                            <dl class="savings-item__stats">
+                                <div>
+                                    <dt>Actual budget</dt>
+                                    <dd>{{ row.actualBudget|money(row.currencyType) }}</dd>
+                                </div>
+                                <div>
+                                    <dt>Total spent</dt>
+                                    <dd>{{ row.totalSpent|money(row.currencyType) }}</dd>
+                                </div>
+                                <div>
+                                    <dt>Remaining savings</dt>
+                                    <dd class="{{ row.remainingSavings < 0 ? 'is-negative' : 'is-positive' }}">{{ row.remainingSavings|money(row.currencyType) }}</dd>
+                                </div>
+                            </dl>
+
+                            {% if row.actualBudget > 0 %}
+                                <progress
+                                    class="savings-item__progress"
+                                    value="{{ min(row.totalSpent, row.actualBudget) }}"
+                                    max="{{ row.actualBudget }}"
+                                    aria-label="Spending against the {{ row.description }} budget"
+                                ></progress>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if uncategorizedSpent > 0 %}
+                <p class="report-note">
+                    <strong>{{ uncategorizedSpent|money }}</strong> of spending has no
+                    <code>budget_id</code> and is excluded from this report.
+                </p>
+            {% endif %}
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/home.js') }}"></script>
+</body>
+</html>

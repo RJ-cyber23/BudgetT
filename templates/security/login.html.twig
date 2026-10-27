@@ -1,0 +1,49 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}Sign in – BudgetT{% endblock %}
+
+{% block auth_content %}
+    <p class="eyebrow">Welcome back</p>
+    <h2>Sign in to your account</h2>
+    <p class="auth-lede">Pick up where you left off with your budgets, transactions, and savings.</p>
+
+    {% if error %}
+        <div class="auth-alert" role="alert">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <form class="auth-form" method="post" action="{{ path('app_login') }}">
+        <div class="auth-field">
+            <label for="username">Username</label>
+            <input
+                type="text"
+                value="{{ last_username }}"
+                name="_username"
+                id="username"
+                autocomplete="username"
+                autocapitalize="none"
+                spellcheck="false"
+                required
+                autofocus
+            >
+        </div>
+
+        <div class="auth-field">
+            <label for="password">Password</label>
+            <input
+                type="password"
+                name="_password"
+                id="password"
+                autocomplete="current-password"
+                required
+            >
+        </div>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button class="auth-submit" type="submit">Sign in</button>
+    </form>
+
+    <p class="auth-alt">New to BudgetT? <a href="{{ path('app_register') }}">Create an account</a></p>
+{% endblock %}

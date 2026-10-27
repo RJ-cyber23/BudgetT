@@ -1,0 +1,145 @@
+/* Savings report: aggregated budget versus spending. */
+
+.is-positive { color: var(--brand-dark); }
+.is-negative { color: var(--ink); }
+
+.savings-list {
+    display: grid;
+    gap: .75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.savings-item {
+    position: relative;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.savings-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 3px;
+    background: var(--gradient-bright);
+    pointer-events: none;
+}
+
+.savings-item__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .75rem;
+}
+
+.savings-item__title-group { min-width: 0; }
+
+.savings-item__title {
+    margin: 0 0 .2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.savings-item__meta {
+    margin: 0;
+    font-size: .8rem;
+    line-height: 1.4;
+    color: var(--ink-soft);
+}
+
+.savings-item__remaining {
+    flex: none;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.savings-item__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .5rem;
+    margin: .9rem 0 0;
+}
+
+.savings-item__stats > div {
+    padding: .5rem .6rem;
+    border: 1px solid #f1ecf8;
+    border-radius: 10px;
+    background: #fbfaff;
+}
+
+.savings-item__stats dt {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+}
+
+.savings-item__stats dd {
+    margin: .2rem 0 0;
+    font-size: 1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Native progress element, so no inline styles are needed for the ratio. */
+.savings-item__progress {
+    display: block;
+    width: 100%;
+    height: 6px;
+    margin-top: .9rem;
+    border: 0;
+    border-radius: 999px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--violet-soft);
+    overflow: hidden;
+}
+
+.savings-item__progress::-webkit-progress-bar { background: var(--violet-soft); }
+.savings-item__progress::-webkit-progress-value {
+    border-radius: 999px;
+    background: var(--gradient-bright);
+}
+.savings-item__progress::-moz-progress-bar {
+    border-radius: 999px;
+    background: var(--gradient-bright);
+}
+
+.report-note {
+    margin: 1rem 0 0;
+    padding: .75rem .85rem;
+    border: 1px dashed var(--violet-line);
+    border-radius: 10px;
+    background: #fbfaff;
+    font-size: .82rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+}
+
+.report-note code {
+    padding: .1rem .3rem;
+    border-radius: 5px;
+    background: var(--violet-soft);
+    color: var(--brand-dark);
+    font-size: .75rem;
+}
+
+@media (max-width: 479.98px) {
+    .savings-item__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .savings-item__stats > div:last-child { grid-column: 1 / -1; }
+}
