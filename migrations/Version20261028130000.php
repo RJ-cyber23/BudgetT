@@ -2,6 +2,7 @@
 
 namespace DoctrineMigrations;
 
+use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -14,6 +15,12 @@ final class Version20261028130000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        // SQLite databases start from Version20261027180825, which already
+        // contains the full schema. The ALTER statements below are MySQL-only.
+        if ($this->connection->getDatabasePlatform() instanceof SQLitePlatform) {
+            return;
+        }
+
         $this->addSql('ALTER TABLE users ADD UNIQUE INDEX UNIQ_USERS_USERNAME (username)');
         $this->addSql('ALTER TABLE `transaction` ADD user_id INT UNSIGNED DEFAULT NULL');
         $this->addSql('UPDATE `transaction` t INNER JOIN budget b ON t.budget_id = b.budget_id SET t.user_id = b.user_id WHERE t.user_id IS NULL');
@@ -26,6 +33,10 @@ final class Version20261028130000 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
+        if ($this->connection->getDatabasePlatform() instanceof SQLitePlatform) {
+            return;
+        }
+
         $this->addSql('ALTER TABLE `transaction` DROP FOREIGN KEY FK_TRANSACTION_USER');
         $this->addSql('ALTER TABLE `transaction` DROP INDEX IDX_TRANSACTION_USER');
         $this->addSql('ALTER TABLE `transaction` DROP user_id');

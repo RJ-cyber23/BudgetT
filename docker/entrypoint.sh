@@ -12,9 +12,17 @@ if [ -z "${APP_SECRET:-}" ]; then
 fi
 
 if [ -z "${DATABASE_URL:-}" ]; then
-    echo "DATABASE_URL is not set. Add the MySQL connection string to the Render environment variables." >&2
+    echo "DATABASE_URL is empty. Remove it to use the image default, or set it to sqlite:////var/data/budget.db." >&2
     exit 1
 fi
+
+# Render persistence: mount a disk at /var/data and keep the SQLite file there.
+case "${DATABASE_URL}" in
+    sqlite:*)
+        mkdir -p /var/data
+        chown www-data:www-data /var/data
+        ;;
+esac
 
 if [ "${RUN_MIGRATIONS:-1}" = "1" ]; then
     echo "Running Doctrine migrations..."
@@ -24,7 +32,10 @@ fi
 echo "Warming Symfony cache..."
 php bin/console cache:warmup --no-debug
 
-# The cache was generated as root; Apache's PHP worker runs as www-data.
+# The cache/database were generated as root; Apache's PHP worker runs as www-data.
 chown -R www-data:www-data var public/assets
+if [ -d /var/data ]; then
+    chown -R www-data:www-data /var/data
+fi
 
 exec "$@"

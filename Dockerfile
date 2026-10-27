@@ -7,15 +7,16 @@ COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 ENV APP_ENV=prod \
     APP_DEBUG=0 \
+    DATABASE_URL=sqlite:////var/data/budget.db \
     APACHE_DOCUMENT_ROOT=/var/www/html/public \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_MEMORY_LIMIT=-1
 
+# php:8.5-apache already ships with pdo_sqlite and sqlite3.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     apt-get update \
     && apt-get install -y --no-install-recommends unzip \
-    && docker-php-ext-install -j"$(nproc)" pdo_mysql \
     && a2enmod rewrite headers
 
 WORKDIR /var/www/html
