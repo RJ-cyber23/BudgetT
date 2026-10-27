@@ -11,27 +11,19 @@ ENV APP_ENV=prod \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_MEMORY_LIMIT=-1
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        libicu-dev \
-        libonig-dev \
-        libxml2-dev \
-        libzip-dev \
-    && docker-php-ext-install -j"$(nproc)" \
-        intl \
-        mbstring \
-        opcache \
-        pdo_mysql \
-        xml \
-        zip \
-    && a2enmod rewrite headers \
-    && rm -rf /var/lib/apt/lists/*
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt-get update \
+    && apt-get install -y --no-install-recommends unzip \
+    && docker-php-ext-install -j"$(nproc)" pdo_mysql \
+    && a2enmod rewrite headers
 
 WORKDIR /var/www/html
 
 # Install dependencies first so this layer is cached when only application files change.
 COPY composer.json composer.lock symfony.lock ./
-RUN composer install \
+RUN --mount=type=cache,target=/tmp/composer-cache,sharing=locked \
+    COMPOSER_CACHE_DIR=/tmp/composer-cache composer install \
     --no-dev \
     --no-interaction \
     --no-progress \
